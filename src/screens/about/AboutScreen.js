@@ -4,8 +4,8 @@ import * as _3D from "../3D";
 import THEME from "../../THEME";
 
 export default class AboutScreen extends Screen {
-	constructor(wrapper) {
-		super(wrapper);
+	constructor(container) {
+		super(container);
 		
 		this.content.innerHTML = about;
 		

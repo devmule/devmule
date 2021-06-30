@@ -2,9 +2,10 @@ import './screen.css';
 import THEME from "../THEME";
 
 export default class Screen {
-	constructor(wrapper) {
-		this.wrapper = wrapper;
+	constructor(container) {
+		this.wrapper = document.createElement('div');
 		this.wrapper.classList.add('screen-wrapper');
+		container.appendChild(this.wrapper);
 		
 		this.content = document.createElement('div');
 		this.content.classList.add('screen-content');
