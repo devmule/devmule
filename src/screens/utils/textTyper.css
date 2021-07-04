@@ -1,0 +1,10 @@
+.text-typer-caret {
+    border-right: .05em solid;
+    animation: typer-caret-anim 1s steps(1) infinite;
+}
+
+@keyframes typer-caret-anim {
+    50% {
+        border-color: transparent;
+    }
+}

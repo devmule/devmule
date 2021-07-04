@@ -1,12 +1,16 @@
 class Vector {
 	constructor(x = 0, y = 0, z = 0) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.set(x, y, z);
 	}
 	
 	get amplitude() {
 		return Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
+	}
+	
+	set(x = 0, y = 0, z = 0) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 }
 
@@ -63,7 +67,7 @@ export class Object3D {
 		}
 		
 		this.lines = [];
-		this.color = "#323232";
+		this.color = "#fff";
 		this.rotation = new Vector();
 		this.scale = 1;
 		this.offsetX = 0;
@@ -109,8 +113,10 @@ export class Torus extends Object3D {
 	constructor(rings, ringSegments, ringSize, offset) {
 		super();
 		let dots = [];
+		let rotVector = new Vector();
 		for (let i = 0; i < rings; i++) { // создание торуса.  положение точки зависит от положения плоскости,
-			Object3D.matrix.calculate(new Vector(0, Math.PI * 2 / rings * i, 0));
+			rotVector.set(0, Math.PI * 2 / rings * i);
+			Object3D.matrix.calculate(rotVector);
 			for (let j = 0; j < ringSegments; j++) {
 				let angle = Math.PI * 2 / ringSegments * j;
 				Object3D.vec.x = ringSize * Math.cos(angle) + offset;
@@ -126,6 +132,60 @@ export class Torus extends Object3D {
 		}
 		for (let j = 0; j < dots.length; j++) // соединить точки на одном уровне между кольцами по кругу
 			this.lines.push([dots[j], dots[(j + ringSegments) % dots.length]]);
+	}
+	
+	tick(dt) {
+		this.rotation.x = 2;
+		this.rotation.y += .2 * dt;
+		this.rotation.z = 1;
+	}
+	
+	draw(ctx) {
+		
+		Object3D.matrix.calculate(this.rotation);
+		
+		ctx.beginPath();
+		for (let j = 0; j < this.lines.length; j++) {
+			
+			Object3D.matrix.apply(this.lines[j][0], Object3D.a);
+			this.simplePerspective(ctx, Object3D.a, this.scale);
+			
+			Object3D.matrix.apply(this.lines[j][1], Object3D.b);
+			this.simplePerspective(ctx, Object3D.b, this.scale);
+			
+			this.drawMultiSized(ctx,
+				Object3D.a.x + this.offsetX, Object3D.a.y + this.offsetY,
+				(Object3D.a.z + this.maxDistance) / (this.maxDistance * 2) * (this.maxWidth - this.minWidth) + this.minWidth,
+				Object3D.b.x + this.offsetX, Object3D.b.y + this.offsetY,
+				(Object3D.b.z + this.maxDistance) / (this.maxDistance * 2) * (this.maxWidth - this.minWidth) + this.minWidth,
+			);
+		}
+		ctx.closePath();
+		ctx.fillStyle = this.color;
+		ctx.fill();
+	}
+}
+
+export class Icosahedron extends Object3D {
+	constructor(radius) {
+		super();
+		let radMid = Math.cos(Math.PI / 6) * radius;
+		let top = new Vector(0, 0, radius),
+			bot = new Vector(0, 0, -radius),
+			r1 = [], r2 = [];
+		let seg = Math.PI * 2 / 5;
+		for (let i = 0; i < 5; i++) {
+			r1[i] = new Vector(Math.sin(seg * i) * radMid, Math.cos(seg * i) * radMid, radius / 2);
+			r2[i] = new Vector(Math.sin(seg * i + seg / 2) * radMid, Math.cos(seg * i + seg / 2) * radMid, -radius / 2);
+		}
+		for (let i = 0; i < 5; i++) {
+			this.lines.push([top, r1[i]]);
+			this.lines.push([r1[i], r1[(i + 1) % 5]]);
+			this.lines.push([r1[i], r2[i]]);
+			this.lines.push([r2[i], r1[(i + 1) % 5]]);
+			this.lines.push([r2[i], r2[(i + 1) % 5]]);
+			this.lines.push([bot, r2[i]]);
+		}
 	}
 	
 	tick(dt) {
@@ -179,7 +239,7 @@ export class Scene3D {
 				this.draw(dt);
 				requestAnimationFrame(player);
 			}
-		}
+		};
 		
 		this.play = () => {
 			if (!playing) {
@@ -187,16 +247,16 @@ export class Scene3D {
 				playing = true;
 				player();
 			}
-		}
+		};
 		
 		this.stop = () => {
 			if (playing) playing = false;
-		}
+		};
 		
 		this.togglePlaying = () => {
 			if (playing) this.stop();
 			else this.play();
-		}
+		};
 		
 		this.getIsPlaying = () => playing;
 	}
