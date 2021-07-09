@@ -4,7 +4,7 @@ import './greet.css';
 import Screen from "../Screen";
 import * as _3D from "../utils/3D.js";
 import THEME from "../../THEME";
-import {TextTyper} from "../utils/textTyper";
+import TextTyper from "../utils/textTyper";
 
 export default class Greet extends Screen {
 	constructor(container) {
@@ -30,7 +30,7 @@ export default class Greet extends Screen {
 		let texElem = this.content.getElementsByClassName('about-text')[0];
 		texElem.style.textShadow = `${THEME.backgroundColor} 0 0 20px`;
 		
-		let text = `Hi! My name is Maxim Batyatin aka devmule.\nI develop multiplatform applications and games!`;
+		let text = `Hi! I am devmule.\nI develop multiplatform applications and games!`;
 		
 		this.typer = new TextTyper(texElem, text);
 		this.typer.type();

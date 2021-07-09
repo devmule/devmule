@@ -1,10 +1,13 @@
 import './index.css'; // общие стили
 import Greet from "./screens/greet/greet";
+import ILoveMath from "./screens/ILoveMath/ILoveMath";
 
 
 class Application {
 	constructor() {
-		new Greet(document.getElementById('screen'));
+		let screen = document.getElementById('screen');
+		new Greet(screen);
+		new ILoveMath(screen);
 	}
 }
 

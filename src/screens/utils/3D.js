@@ -237,7 +237,7 @@ export class Scene3D {
 			lastTime = nowTime;
 			if (playing) {
 				this.draw(dt);
-				requestAnimationFrame(player);
+				setTimeout(player, 16);
 			}
 		};
 		
@@ -252,13 +252,6 @@ export class Scene3D {
 		this.stop = () => {
 			if (playing) playing = false;
 		};
-		
-		this.togglePlaying = () => {
-			if (playing) this.stop();
-			else this.play();
-		};
-		
-		this.getIsPlaying = () => playing;
 	}
 	
 	setSize(w, h) {

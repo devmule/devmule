@@ -1,6 +1,6 @@
 import './textTyper.css';
 
-export class TextTyper {
+export default class TextTyper {
 	constructor(element, text, timeout = 50) {
 		this.element = element;
 		this.text = text;
@@ -11,7 +11,8 @@ export class TextTyper {
 		
 		let typeLoop = () => {
 			currentIndex++;
-			this.element.innerHTML = this.text.substring(0, currentIndex) + '<span class="text-typer-caret" aria-hidden="true"></span>';
+			this.element.innerHTML = this.text.substring(0, currentIndex).replace('\n', '<br>')
+				+ '<span class="text-typer-caret" aria-hidden="true"></span>';
 			if (currentIndex >= this.text.length) this.stop();
 		};
 		
