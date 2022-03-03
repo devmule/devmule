@@ -18,7 +18,6 @@ module.exports = {
 	resolve: {extensions: ['.js', '.css', 'html']},
 	plugins: [new HtmlWebpackPlugin({
 		favicon: './src/icon.png',
-		filename: 'index.html',
-		template: 'src/index.html'
+		filename: 'index.html'
 	})],
 };
